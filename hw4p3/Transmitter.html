@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiLight Transmitter (Alpha Channel)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 { margin-bottom: 10px; }
+
+        /* --- THE TRANSMITTER CONTAINER --- */
+        /* This represents the device screen in the paper */
+        #screen-container {
+            position: relative;
+            width: 640px;
+            height: 480px;
+            background-color: #000;
+            border: 10px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* 1. Content Layer  */
+        /* Arbitrary content (image, video, game) */
+        #content-layer {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 2. Communication Layer */
+        /* A black matte overlay, fully transparent by default */
+        #comms-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 0;
+            pointer-events: none;
+            will-change: opacity;
+            z-index: 10;
+        }
+
+        /* --- CONTROLS --- */
+        #controls {
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 640px;
+            box-sizing: border-box;
+        }
+
+        .input-group { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        #download-btn { background-color: #28a745; }
+        #download-btn:hover { background-color: #218838; }
+
+        .note {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>HiLight Transmitter</h1>
+
+    <div id="screen-container">
+        <img id="content-layer" src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Screen Content">
+
+        <div id="comms-layer"></div>
+    </div>
+
+    <div id="controls">
+        <div class="input-group">
+            <label>Data to Transmit (Binary):</label>
+            <input type="text" id="bit-input" value="1011001110" placeholder="Enter 0s and 1s">
+            <p class="note">Note: Text input will be automatically converted to binary.</p>
+        </div>
+
+        <div class="input-group">
+            <label>Alpha Strength (Delta Alpha):</label>
+            <select id="alpha-strength">
+                <option value="0.04">4%</option>
+                <option value="0.08">8%</option>
+                <option value="0.10">10%</option>
+                <option value="0.20">20%</option>
+                <option value="0.50">50%</option>
+            </select>
+        </div>
+
+        <button id="start-btn">Start Transmission</button>
+        <button id="download-btn">Download Ground Truth File</button>
+
+        <div class="status" id="status-display">Status: Ready (Screen Refreshes @ ~60Hz)</div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const TARGET_FPS = 60;
+        const FRAMES_PER_BIT = 6; //
+
+        // --- DOM ELEMENTS ---
+        const commsLayer = document.getElementById('comms-layer');
+        const startBtn = document.getElementById('start-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const bitInput = document.getElementById('bit-input');
+        const statusDisplay = document.getElementById('status-display');
+        const alphaSelect = document.getElementById('alpha-strength');
+
+        let isTransmitting = false;
+        let animationFrameId;
+
+        // --- BFSK PATTERNS
+        // 0 = 20Hz (Period = 3 frames @ 60fps) -> High, Low, Low
+        // 1 = 30Hz (Period = 2 frames @ 60fps) -> High, Low
+        const PATTERNS = {
+            '0': [1, 0, 0, 1, 0, 0], // Two cycles of 3 frames (20Hz)
+            '1': [1, 0, 1, 0, 1, 0]  // Three cycles of 2 frames (30Hz)
+        };
+
+        // --- UTILITIES ---
+        function textToBinary(text) {
+            return text.split('').map(char => {
+                if (char === '0' || char === '1') return char; // Already binary
+                return char.charCodeAt(0).toString(2).padStart(8, '0');
+            }).join('');
+        }
+
+        function createDownloadableFile(bits) {
+            const blob = new Blob([bits], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ground_truth.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // --- TRANSMISSION LOGIC ---
+        function startTransmission() {
+            if (isTransmitting) return;
+
+            let rawInput = bitInput.value.trim();
+            // Simple check if user typed text instead of binary
+            if (/[^01]/.test(rawInput)) {
+                // Convert text to binary if it contains non-0/1
+                rawInput = rawInput.split('').map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join('');
+                console.log("Converted text to binary:", rawInput);
+            }
+
+            const bits = rawInput;
+            if (!bits) {
+                alert("Please enter data to transmit.");
+                return;
+            }
+
+            // 1. Prepare the Frame Buffer
+            // We pre-calculate the opacity for every single frame to ensure speed
+            const frameBuffer = [];
+            const deltaAlpha = parseFloat(alphaSelect.value);
+
+            // Add a "Lead-in" signal (All 1s for 0.1s/6 frames) to help sync
+            const leadInFrames = 6;
+            for(let i=0; i<leadInFrames; i++) frameBuffer.push(deltaAlpha);
+
+            // Encode bits
+            for (let bit of bits) {
+                const pattern = PATTERNS[bit];
+                if (pattern) {
+                    pattern.forEach(val => {
+                        // If val is 1, opacity = deltaAlpha. If 0, opacity = 0.
+                        frameBuffer.push(val * deltaAlpha);
+                    });
+                }
+            }
+
+            // 2. Start Animation Loop
+            isTransmitting = true;
+            startBtn.disabled = true;
+            statusDisplay.textContent = `Transmitting ${bits.length} bits...`;
+
+            let frameIndex = 0;
+            let lastTime = performance.now();
+            const interval = 1000 / TARGET_FPS;
+
+            function step(timestamp) {
+                if (!isTransmitting) return;
+
+                const elapsed = timestamp - lastTime;
+
+                // Sync to 60 FPS
+                if (elapsed > interval) {
+                    lastTime = timestamp - (elapsed % interval);
+
+                    if (frameIndex < frameBuffer.length) {
+                        // Apply Alpha Blending
+                        commsLayer.style.opacity = frameBuffer[frameIndex];
+                        frameIndex++;
+                    } else {
+                        // Done
+                        stopTransmission();
+                        return;
+                    }
+                }
+
+                animationFrameId = requestAnimationFrame(step);
+            }
+
+            animationFrameId = requestAnimationFrame(step);
+        }
+
+        function stopTransmission() {
+            isTransmitting = false;
+            cancelAnimationFrame(animationFrameId);
+            commsLayer.style.opacity = 0;
+            startBtn.disabled = false;
+            statusDisplay.textContent = "Status: Transmission Complete";
+        }
+
+        // --- EVENT LISTENERS ---
+        startBtn.addEventListener('click', startTransmission);
+
+        downloadBtn.addEventListener('click', () => {
+            let content = bitInput.value.trim();
+            // Ensure we download what the receiver expects (raw binary)
+            if (/[^01]/.test(content)) {
+                content = content.split('').map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join('');
+            }
+            createDownloadableFile(content);
+        });
+
+    </script>
+</body>
+</html>
