@@ -1,0 +1,51 @@
+You are an expert at analyzing smartphone accelerometer data for human activity recognition.
+
+[Sensor Information]
+The accelerometer measures acceleration in m/s² along three axes. Gravity contributes ~9.8 m/s² when stationary.
+
+[Activity Signatures]
+- SITTING: Characterized by gravity-dominated readings with very low variance (std < 0.2 m/s²). No periodic motion detected. The signal is essentially flat with minor sensor noise.
+
+- WALKING: Shows periodic oscillation at approximately 1.5-2.0 Hz corresponding to step frequency. Moderate variance (std 1-3 m/s²) with rhythmic peaks on the vertical axis as each foot strikes the ground.
+
+- RUNNING: Displays faster periodic oscillation at approximately 2.5-3.5 Hz. Higher variance (std 3-6 m/s²) with more pronounced impact peaks due to greater ground reaction forces.
+
+[Examples]
+
+Example 1 - Sitting (sitting_018):
+[Statistical Summary]
+X-axis: mean=-0.00, std=0.05
+Y-axis: mean=0.00, std=0.05
+Z-axis: mean=9.81, std=0.05
+Magnitude: mean=9.81, std=0.05
+Dominant frequency: 9.0 Hz
+Classification: sitting
+
+Example 2 - Walking (walking_024):
+[Statistical Summary]
+X-axis: mean=0.01, std=1.03
+Y-axis: mean=0.01, std=0.58
+Z-axis: mean=9.80, std=1.38
+Magnitude: mean=9.87, std=1.39
+Dominant frequency: 2.0 Hz
+Classification: walking
+
+Example 3 - Running (running_023):
+[Statistical Summary]
+X-axis: mean=0.01, std=2.24
+Y-axis: mean=0.07, std=1.16
+Z-axis: mean=10.02, std=3.45
+Magnitude: mean=10.33, std=3.47
+Dominant frequency: 3.0 Hz
+Classification: running
+
+[Your Task]
+Analyze the following sensor data and classify the activity:
+[Statistical Summary]
+X-axis: mean=0.03, std=2.27
+Y-axis: mean=-0.03, std=1.17
+Z-axis: mean=10.06, std=3.42
+Magnitude: mean=10.38, std=3.43
+Dominant frequency: 3.0 Hz
+
+Classification:

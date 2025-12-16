@@ -1,0 +1,115 @@
+BATCH EVALUATION: Classify each window
+============================================================
+
+Activity signatures:
+- SITTING: std < 0.2, no periodic motion
+- WALKING: std 1-3, frequency ~2.0 Hz
+- RUNNING: std 3-6, frequency ~3.0 Hz
+
+Window Data:
+------------------------------------------------------------
+
+running_001:
+  X: mean=0.03, std=2.24
+  Y: mean=0.06, std=1.23
+  Z: mean=10.09, std=3.34
+  Magnitude: mean=10.41, std=3.35
+  Dominant frequency: 3.0 Hz
+
+running_004:
+  X: mean=0.03, std=2.27
+  Y: mean=-0.03, std=1.17
+  Z: mean=10.06, std=3.42
+  Magnitude: mean=10.38, std=3.43
+  Dominant frequency: 3.0 Hz
+
+running_008:
+  X: mean=0.00, std=2.31
+  Y: mean=-0.11, std=1.20
+  Z: mean=10.07, std=3.62
+  Magnitude: mean=10.40, std=3.62
+  Dominant frequency: 3.0 Hz
+
+running_009:
+  X: mean=0.03, std=2.25
+  Y: mean=0.06, std=1.21
+  Z: mean=10.05, std=3.33
+  Magnitude: mean=10.36, std=3.35
+  Dominant frequency: 3.0 Hz
+
+running_021:
+  X: mean=0.02, std=2.27
+  Y: mean=0.08, std=1.15
+  Z: mean=10.04, std=3.61
+  Magnitude: mean=10.35, std=3.63
+  Dominant frequency: 3.0 Hz
+
+sitting_001:
+  X: mean=0.00, std=0.05
+  Y: mean=0.00, std=0.05
+  Z: mean=9.82, std=0.05
+  Magnitude: mean=9.82, std=0.05
+  Dominant frequency: 18.2 Hz
+
+sitting_004:
+  X: mean=0.01, std=0.05
+  Y: mean=-0.00, std=0.05
+  Z: mean=9.81, std=0.05
+  Magnitude: mean=9.81, std=0.05
+  Dominant frequency: 22.6 Hz
+
+sitting_008:
+  X: mean=-0.00, std=0.05
+  Y: mean=0.00, std=0.05
+  Z: mean=9.81, std=0.05
+  Magnitude: mean=9.81, std=0.05
+  Dominant frequency: 10.6 Hz
+
+sitting_009:
+  X: mean=-0.00, std=0.06
+  Y: mean=-0.00, std=0.06
+  Z: mean=9.81, std=0.05
+  Magnitude: mean=9.81, std=0.05
+  Dominant frequency: 5.8 Hz
+
+sitting_021:
+  X: mean=0.00, std=0.05
+  Y: mean=0.00, std=0.05
+  Z: mean=9.81, std=0.05
+  Magnitude: mean=9.81, std=0.05
+  Dominant frequency: 19.8 Hz
+
+walking_001:
+  X: mean=-0.02, std=1.17
+  Y: mean=0.03, std=0.58
+  Z: mean=9.81, std=1.58
+  Magnitude: mean=9.89, std=1.59
+  Dominant frequency: 2.0 Hz
+
+walking_004:
+  X: mean=0.02, std=1.06
+  Y: mean=0.00, std=0.59
+  Z: mean=9.79, std=1.38
+  Magnitude: mean=9.86, std=1.39
+  Dominant frequency: 2.0 Hz
+
+walking_008:
+  X: mean=0.00, std=1.02
+  Y: mean=0.01, std=0.60
+  Z: mean=9.81, std=1.38
+  Magnitude: mean=9.88, std=1.39
+  Dominant frequency: 2.0 Hz
+
+walking_009:
+  X: mean=-0.01, std=1.17
+  Y: mean=-0.02, std=0.59
+  Z: mean=9.81, std=1.57
+  Magnitude: mean=9.90, std=1.58
+  Dominant frequency: 2.0 Hz
+
+walking_021:
+  X: mean=0.01, std=1.16
+  Y: mean=0.00, std=0.61
+  Z: mean=9.82, std=1.57
+  Magnitude: mean=9.90, std=1.58
+  Dominant frequency: 2.0 Hz
