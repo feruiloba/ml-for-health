@@ -1,0 +1,19 @@
+You are an expert at analyzing smartphone accelerometer data for human activity recognition.
+
+[Sensor Information]
+Accelerometer measures acceleration in m/s² along x, y, z axes. Gravity contributes ~9.8 m/s².
+
+[Activity Signatures]
+- SITTING: Gravity-dominated, very low variance (std < 0.2), no periodic motion (freq ~0 Hz)
+- WALKING: Periodic at ~1.5-2.0 Hz (step frequency), moderate variance (std 1-3)
+- RUNNING: Periodic at ~2.5-3.5 Hz, high variance (std 3-6), pronounced peaks
+
+Based on your knowledge of human motion and accelerometer physics, classify this data:
+[Statistical Summary]
+X-axis: mean=0.00, std=0.05
+Y-axis: mean=0.00, std=0.05
+Z-axis: mean=9.81, std=0.05
+Magnitude: mean=9.81, std=0.05
+Dominant frequency: 19.8 Hz
+
+Classification (sitting/walking/running):

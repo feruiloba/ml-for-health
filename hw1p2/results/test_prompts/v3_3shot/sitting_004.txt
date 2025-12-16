@@ -1,0 +1,105 @@
+You are an expert at analyzing smartphone accelerometer data for human activity recognition.
+
+[Sensor Information]
+The accelerometer measures acceleration in m/s² along three axes. Gravity contributes ~9.8 m/s² when stationary.
+
+[Activity Signatures]
+- SITTING: Characterized by gravity-dominated readings with very low variance (std < 0.2 m/s²). No periodic motion detected. The signal is essentially flat with minor sensor noise.
+
+- WALKING: Shows periodic oscillation at approximately 1.5-2.0 Hz corresponding to step frequency. Moderate variance (std 1-3 m/s²) with rhythmic peaks on the vertical axis as each foot strikes the ground.
+
+- RUNNING: Displays faster periodic oscillation at approximately 2.5-3.5 Hz. Higher variance (std 3-6 m/s²) with more pronounced impact peaks due to greater ground reaction forces.
+
+[Examples]
+
+Example 1 - Sitting (sitting_024):
+[Statistical Summary]
+X-axis: mean=-0.00, std=0.05
+Y-axis: mean=-0.00, std=0.05
+Z-axis: mean=9.81, std=0.05
+Magnitude: mean=9.81, std=0.05
+Dominant frequency: 24.6 Hz
+Classification: sitting
+
+Example 2 - Sitting (sitting_010):
+[Statistical Summary]
+X-axis: mean=-0.01, std=0.08
+Y-axis: mean=0.01, std=0.08
+Z-axis: mean=9.81, std=0.05
+Magnitude: mean=9.81, std=0.05
+Dominant frequency: 14.6 Hz
+Classification: sitting
+
+Example 3 - Sitting (sitting_022):
+[Statistical Summary]
+X-axis: mean=-0.01, std=0.05
+Y-axis: mean=-0.00, std=0.05
+Z-axis: mean=9.81, std=0.05
+Magnitude: mean=9.81, std=0.05
+Dominant frequency: 16.0 Hz
+Classification: sitting
+
+Example 4 - Walking (walking_012):
+[Statistical Summary]
+X-axis: mean=-0.01, std=1.04
+Y-axis: mean=0.01, std=0.61
+Z-axis: mean=9.80, std=1.38
+Magnitude: mean=9.87, std=1.39
+Dominant frequency: 2.0 Hz
+Classification: walking
+
+Example 5 - Walking (walking_024):
+[Statistical Summary]
+X-axis: mean=0.01, std=1.03
+Y-axis: mean=0.01, std=0.58
+Z-axis: mean=9.80, std=1.38
+Magnitude: mean=9.87, std=1.39
+Dominant frequency: 2.0 Hz
+Classification: walking
+
+Example 6 - Walking (walking_019):
+[Statistical Summary]
+X-axis: mean=-0.00, std=1.18
+Y-axis: mean=-0.00, std=0.61
+Z-axis: mean=9.82, std=1.56
+Magnitude: mean=9.90, std=1.57
+Dominant frequency: 2.0 Hz
+Classification: walking
+
+Example 7 - Running (running_022):
+[Statistical Summary]
+X-axis: mean=-0.00, std=2.29
+Y-axis: mean=-0.02, std=1.17
+Z-axis: mean=10.08, std=3.40
+Magnitude: mean=10.40, std=3.42
+Dominant frequency: 3.0 Hz
+Classification: running
+
+Example 8 - Running (running_003):
+[Statistical Summary]
+X-axis: mean=0.00, std=2.31
+Y-axis: mean=0.08, std=1.16
+Z-axis: mean=10.07, std=3.45
+Magnitude: mean=10.39, std=3.47
+Dominant frequency: 3.0 Hz
+Classification: running
+
+Example 9 - Running (running_018):
+[Statistical Summary]
+X-axis: mean=0.01, std=2.29
+Y-axis: mean=-0.09, std=1.20
+Z-axis: mean=10.07, std=3.56
+Magnitude: mean=10.40, std=3.55
+Dominant frequency: 3.0 Hz
+Classification: running
+
+[Your Task]
+Analyze the following sensor data and classify the activity:
+[Statistical Summary]
+X-axis: mean=0.01, std=0.05
+Y-axis: mean=-0.00, std=0.05
+Z-axis: mean=9.81, std=0.05
+Magnitude: mean=9.81, std=0.05
+Dominant frequency: 22.6 Hz
+
+Classification:
