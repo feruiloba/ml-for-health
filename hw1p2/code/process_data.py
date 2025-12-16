@@ -15,8 +15,8 @@ TEST_RATIO = 0.2
 RANDOM_SEED = 42
 
 # Paths
-DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw')
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'accelerometer', 'raw')
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'accelerometer', 'processed')
 
 ACTIVITIES = ['sitting', 'walking', 'running']
 
@@ -34,8 +34,8 @@ def load_and_segment(activity):
         end_idx = start_idx + WINDOW_SIZE
         window_df = df.iloc[start_idx:end_idx]
 
-        # Format samples as [[t, x, y, z], ...]
-        samples = window_df[['timestamp', 'x', 'y', 'z']].values.tolist()
+        # Format samples as [[x, y, z], ...]
+        samples = window_df[['x', 'y', 'z']].values.tolist()
 
         window = {
             "window_id": f"{activity}_{i+1:03d}",

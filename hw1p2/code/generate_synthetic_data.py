@@ -20,11 +20,6 @@ GRAVITY = 9.81  # m/s^2
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw')
 
 
-def generate_timestamps(num_samples, sampling_rate):
-    """Generate timestamps in seconds."""
-    return np.arange(num_samples) / sampling_rate
-
-
 def generate_sitting_data(num_samples):
     """
     Sitting: Phone relatively stationary (e.g., in pocket or on table).
@@ -32,8 +27,6 @@ def generate_sitting_data(num_samples):
     - Very small random noise on all axes
     - Occasional tiny movements (fidgeting)
     """
-    timestamps = generate_timestamps(num_samples, SAMPLING_RATE)
-
     # Assume phone is flat, gravity on z-axis
     # Small noise to simulate sensor imperfection and micro-movements
     noise_std = 0.05
@@ -53,7 +46,6 @@ def generate_sitting_data(num_samples):
         y[idx:end_idx] += np.random.normal(0, fidget_magnitude, end_idx - idx)
 
     return pd.DataFrame({
-        'timestamp': timestamps,
         'x': x,
         'y': y,
         'z': z
@@ -68,10 +60,8 @@ def generate_walking_data(num_samples):
     - Side-to-side sway on y-axis
     - Moderate amplitude variations
     """
-    timestamps = generate_timestamps(num_samples, SAMPLING_RATE)
-
     step_freq = 2.0  # Hz (typical walking cadence)
-    t = timestamps
+    t = np.arange(num_samples) / SAMPLING_RATE
 
     # Vertical oscillation (most prominent during walking)
     z_amplitude = 2.0
@@ -100,7 +90,6 @@ def generate_walking_data(num_samples):
     z = GRAVITY + (z - GRAVITY) * amplitude_variation
 
     return pd.DataFrame({
-        'timestamp': timestamps,
         'x': x,
         'y': y,
         'z': z
@@ -114,10 +103,8 @@ def generate_running_data(num_samples):
     - Stronger impact peaks
     - Higher overall acceleration magnitudes
     """
-    timestamps = generate_timestamps(num_samples, SAMPLING_RATE)
-
     step_freq = 3.0  # Hz (typical running cadence)
-    t = timestamps
+    t = np.arange(num_samples) / SAMPLING_RATE
 
     # Vertical oscillation (very pronounced during running)
     z_amplitude = 4.5
@@ -153,7 +140,6 @@ def generate_running_data(num_samples):
                 z[i + j] += spike_magnitude * (1 - j / 3)
 
     return pd.DataFrame({
-        'timestamp': timestamps,
         'x': x,
         'y': y,
         'z': z
