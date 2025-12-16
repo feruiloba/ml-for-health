@@ -7,7 +7,7 @@ import os
 import numpy as np
 
 # Paths
-PROCESSED_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed')
+PROCESSED_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'accelerometer', 'processed')
 
 # Configuration
 SAMPLING_RATE = 50  # Hz
@@ -17,7 +17,7 @@ DOWNSAMPLE_FACTOR = 10  # Show every Nth sample (250 -> 25 readings)
 def compute_statistics(samples):
     """Compute statistical features from samples."""
     arr = np.array(samples)
-    t, x, y, z = arr[:, 0], arr[:, 1], arr[:, 2], arr[:, 3]
+    x, y, z = arr[:, 0], arr[:, 1], arr[:, 2]
     magnitude = np.sqrt(x**2 + y**2 + z**2)
 
     stats = {
@@ -49,7 +49,8 @@ def format_raw_only(window):
     lines = []
 
     for i in range(0, len(samples), DOWNSAMPLE_FACTOR):
-        t, x, y, z = samples[i]
+        x, y, z = samples[i]
+        t = i / SAMPLING_RATE  # Calculate time from sample index
         lines.append(f"t={t:.2f}s: x={x:.2f}, y={y:.2f}, z={z:.2f}")
 
     return "\n".join(lines)

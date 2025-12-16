@@ -9,7 +9,7 @@ import numpy as np
 from format_for_prompt import compute_statistics
 
 # Paths
-PROCESSED_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed')
+PROCESSED_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'accelerometer', 'processed')
 PROMPTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'prompts')
 
 ACTIVITIES = ['sitting', 'walking', 'running']

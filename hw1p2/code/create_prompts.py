@@ -13,7 +13,7 @@ from format_for_prompt import (
 )
 
 # Paths
-PROCESSED_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed')
+PROCESSED_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'accelerometer', 'processed')
 PROMPTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'prompts')
 
 

@@ -1,5 +1,5 @@
 """
-Visualize synthetic accelerometer data for activity classification.
+Visualize accelerometer data for activity classification.
 """
 
 import numpy as np
@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import os
 
 # Paths
-DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'accelerometer', 'raw')
 RESULTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'results')
 
 ACTIVITIES = ['sitting', 'walking', 'running']
@@ -61,34 +61,34 @@ def create_visualization(data):
     samples_to_plot = PLOT_DURATION * SAMPLING_RATE
 
     fig, axes = plt.subplots(len(ACTIVITIES), 4, figsize=(16, 10))
-    fig.suptitle('Accelerometer Data: 10 Seconds per Activity', fontsize=14, fontweight='bold')
+    fig.suptitle(f'Accelerometer Data: {samples_to_plot} Samples per Activity', fontsize=14, fontweight='bold')
 
     colors = {'x': '#e74c3c', 'y': '#27ae60', 'z': '#3498db', 'magnitude': '#9b59b6'}
 
     for row, activity in enumerate(ACTIVITIES):
         df = data[activity].head(samples_to_plot)
-        time = df['timestamp']
+        samples = np.arange(len(df))
 
         for col, axis in enumerate(['x', 'y', 'z', 'magnitude']):
             ax = axes[row, col]
-            ax.plot(time, df[axis], color=colors[axis], linewidth=0.8)
-            ax.set_xlim(0, PLOT_DURATION)
+            ax.plot(samples, df[axis], color=colors[axis], linewidth=0.8)
+            ax.set_xlim(0, samples_to_plot)
 
-            # Set y-axis limits based on axis type
+            # Set y-axis limits based on axis type (data in g-units)
             if axis == 'magnitude':
-                ax.set_ylim(0, 25)
+                ax.set_ylim(0, 3)
             elif axis == 'z':
-                ax.set_ylim(-5, 20)
+                ax.set_ylim(-1, 3)
             else:
-                ax.set_ylim(-6, 6)
+                ax.set_ylim(-2, 2)
 
             # Labels
             if row == 0:
                 ax.set_title(axis.upper(), fontweight='bold')
             if col == 0:
-                ax.set_ylabel(f'{activity.upper()}\n(m/s²)')
+                ax.set_ylabel(f'{activity.upper()}\n(g)')
             if row == len(ACTIVITIES) - 1:
-                ax.set_xlabel('Time (s)')
+                ax.set_xlabel('Samples')
 
             ax.grid(True, alpha=0.3)
 
